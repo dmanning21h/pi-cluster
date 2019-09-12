@@ -1,2 +1,2 @@
 # pi-cluster
-Senior Project to Design a Hadoop/Spark Raspberry Pi 4 Cluster for Distributed Computing.
+Senior Project to design a Raspberry Pi 4 Cluster using Hadoop/Spark for Distributed Computing.
