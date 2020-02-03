@@ -1,7 +1,9 @@
 # Distributed Computing with the Raspberry Pi 4
 Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine Learning.
 
-## Part 1: Setting up Passwordless SSH.
+## Part 1: Hardware and Setup.
+
+## Part 2: Passwordless SSH.
 
 ### 1. Setup wireless internet connection.
 
@@ -147,9 +149,9 @@ pi@pi1:~$ source ~/.bashrc
 pi@pi1:~$ clusterscp ~/.bashrc
 ```
 
-## Part 2: Installing Hadoop.
+## Part 3: Installing Hadoop.
 
-### 1. Install Java 8 on each node, make this each nodes default Java.
+### 1. Install Java 8 on each node, make this each node's default Java.
 - The latest Raspian (Buster) comes with Java 11 pre-installed. However, the latest Hadoop version (3.2.1) that 
 we will be using only supports Java 8. To resolve this issue we will install OpenJDK 8 and make this the default 
 Java that will run on each device.
@@ -195,4 +197,4 @@ pi@pi1:~$ cd && hadoop version | grep Hadoop
 Hadoop 3.2.1
 ```
 
-## Part 3: Setting up and Testing Hadoop Cluster
+## Part 4: Setting up and Testing Hadoop Cluster
