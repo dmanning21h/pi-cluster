@@ -38,7 +38,7 @@ pi@raspberrypi:~$ sudo mousepad /etc/hostname
 ```console
 pi@raspberrypi:~$ reboot
 ```
-- Upon reopening the command prompt you should see the updated Pi hostname.
+- Upon reopening the command prompt you should see the updated hostname.
 ```console
 pi@piX:~$ 
 ```
@@ -69,7 +69,7 @@ pi@piX:~$ ssh-keygen -t ed25519
 ### 9. Repeat steps 1-8 on the rest of the Pis.
 - Once completed up to creating authentication pairs, append each Pi's public key to pi1's `authorized_keys` file.
 ```console
-pi@piX:~$ cat ~/.ssh/id_ed25519.pub >> | ssh pi @ 192.168.0.101 'cat >> .ssh/authorized_keys'
+pi@piX:~$ cat ~/.ssh/id_ed25519.pub >> | ssh pi@192.168.0.101 'cat >> .ssh/authorized_keys'
 ```
 
 ### 10. (Back on Pi1) Append this Pi's public key to the file as well.
