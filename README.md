@@ -18,7 +18,7 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
  - Follow the Raspberry Pi Foundation's [Official Guide](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up/3) to install the Raspian OS.
  - After setting up one Raspberry Pi fully, [clone the SD card](https://beebom.com/how-clone-raspberry-pi-sd-card-windows-linux-macos/) to each of the others (after formatting each new Micro-SD).
  - Physically assemble cluster.
- - ![My Setup](/pictures/setup.jpeg)
+![My Setup](/pictures/setup.jpeg)
 
 ## Part 2: Passwordless SSH.
 
@@ -135,8 +135,12 @@ function clustercmd {
 ```console
 pi@pi1:~$ source ~/.bashrc
 pi@pi1:~$ clustercmd date
+Sun 26 Jan 2020 12:56:58 PM EST
+Sun 26 Jan 2020 12:56:58 PM EST
+Sun 26 Jan 2020 12:56:58 PM EST
+Sun 26 Jan 2020 12:56:58 PM EST
 ```
-<!-- PUT CLUSTERCMD DATE OUTPUT HERE -->
+
 
 #### `clusterreboot` and `clustershutdown`
 - Reboot and shutdown all nodes in the cluster.
@@ -191,10 +195,9 @@ pi@pi1:/opt$ sudo chown pi:pi -R /opt/hadoop
 ```console
 pi@pi1:~$ sudo mousepad ~/.bashrc
 ```
-<!-- GET EXACT JAVA 8 PATH FOR MY CONFIGURATION -->
 - Add:
 ```shell
-export JAVA_HOME=?????????????
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf/
 export HADOOP_HOME=/opt/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 ```
@@ -204,7 +207,7 @@ export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hadoop-env.sh
 ```
 ```shell
-export JAVA_HOME=??????????????
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf/
 ```
 
 ### 5. Validate Hadoop install.
@@ -215,3 +218,59 @@ Hadoop 3.2.1
 ```
 
 ## Part 4: Setting up and Testing Hadoop Cluster
+
+### 1. Setup Hadoop Distributed File System (HDFS) configuration files (Single Node Setup to start).
+- All of the following files are located within `/opt/hadoop/etc/hadoop`.
+
+#### `core-site.xml`
+- Modify end of file to be:
+```shell
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://pi1:9000</value>
+  </property>
+</configuration>
+```
+
+#### `hdfs-site.xml`
+```shell
+<configuration>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///opt/hadoop_tmp/hdfs/datanode</value>
+  </property>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///opt/hadoop_tmp/hdfs/namenode</value>
+  </property>
+  <property>
+    <name>dfs.replication</name>
+    <value>1</value>
+  </property>
+</configuration> 
+```
+
+#### `mapred-site.xml`
+```shell
+<configuration>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+</configuration>
+```
+
+#### `yarn-site.xml`
+```shell
+<configuration>
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.auxservices.mapreduce.shuffle.class</name>  
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+  </property>
+</configuration> 
+```
