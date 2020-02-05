@@ -18,6 +18,7 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
  - Follow the Raspberry Pi Foundation's [Official Guide](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up/3) to install the Raspian OS.
  - After setting up one Raspberry Pi fully, [clone the SD card](https://beebom.com/how-clone-raspberry-pi-sd-card-windows-linux-macos/) to each of the others (after formatting each new Micro-SD).
  - Physically assemble cluster.
+ - ![My Setup](/pictures/setup.jpeg)
 
 ## Part 2: Passwordless SSH.
 
