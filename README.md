@@ -3,9 +3,25 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
 
 ## Part 1: Hardware and Setup.
 
+### 1. Hardware for my implementation:
+ - (4) Raspberry Pi 4, 4GB Version
+ - (4) 32GB MicroSD Card
+ - (4) USB-C Power Supply
+ - (4) 1ft Ethernet cable
+ - (1) Raspberry Pi Cluster Case
+ - (1) Gigabit Ethernet Switch
+ - (1) Keyboard+Mouse combination
+ - (1) HDMI to Micro-HDMI Cable
+ - (1) HDMI Monitor
+ 
+### 2. Preliminary Setup
+ - Follow the Raspberry Pi Foundation's [Official Guide](https://projects.raspberrypi.org/en/projects/raspberry-pi-setting-up/3) to install the Raspian OS.
+ - After setting up one Raspberry Pi fully, [clone the SD card](https://beebom.com/how-clone-raspberry-pi-sd-card-windows-linux-macos/) to each of the others (after formatting each new Micro-SD).
+ - Physically assemble cluster.
+
 ## Part 2: Passwordless SSH.
 
-### 1. Setup wireless internet connection.
+### 1. (Starting with Pi #1) Setup wireless internet connection.
 
 ### 2. Assign static IP address to the ethernet interface.
 ```console
@@ -117,7 +133,7 @@ function clustercmd {
 ```
 ```console
 pi@pi1:~$ source ~/.bashrc
-pi@pi1:~$ clustercmd data
+pi@pi1:~$ clustercmd date
 ```
 <!-- PUT CLUSTERCMD DATE OUTPUT HERE -->
 
