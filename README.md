@@ -34,7 +34,7 @@ pi@raspberrypi:~$ sudo mousepad /etc/dhcpcd.conf
 - Where X is the respective Raspberry Pi # (e.g. 1, 2, 3, 4)
 
 ### 3. Enable SSH.
-- From Raspberry Pi dropdown menu: Preferences -> Config -> Interfaces -> Enable SSH
+- From Raspberry Pi dropdown menu (Top left corner of desktop): Preferences -> Config -> Interfaces -> Enable SSH
 
 ### 4. Modify `/etc/hosts` to include hostnames and IPs of each Raspberry Pi node.
 ```console
@@ -195,7 +195,7 @@ pi@pi1:/opt$ sudo chown pi:pi -R /opt/hadoop
 ```console
 pi@pi1:~$ sudo mousepad ~/.bashrc
 ```
-- Add:
+- Add (insert at top of file):
 ```shell
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf/
 export HADOOP_HOME=/opt/hadoop
@@ -223,6 +223,9 @@ Hadoop 3.2.1
 - All of the following files are located within `/opt/hadoop/etc/hadoop`.
 
 #### `core-site.xml`
+```console
+pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
+```
 - Modify end of file to be:
 ```shell
 <configuration>
@@ -274,3 +277,95 @@ Hadoop 3.2.1
   </property>
 </configuration> 
 ```
+
+### 2. Create Datanode and Namenode directories.
+```console
+pi@pi1:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
+pi@pi1:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
+pi@pi1:~$ sudo chown pi:pi -R /opt/hadoop_tmp
+```
+
+### 3. Format HDFS.
+```console
+pi@pi1:~$ hdfs namenode -format -force
+```
+
+### 4. Boot HDFS and verify functionality.
+```console
+pi@pi1:~$ start-dfs && start-yarn.sh
+```
+- Verify the setup by using the `jps` command.
+```console
+pi@pi1:~$ jps
+```
+- This command lists all of the Java processes running on the machine, of which there should be at least 6:
+1. `NameNode`
+2. `DataNode`
+3. `NodeManager`
+4. `ResourceManager`
+5. `SecondaryNameNode`
+6. `jps`
+
+- Create temporary directory to test the file system:
+```console
+pi@pi1:~$ hadoop fs -mkdir /tmp
+pi@pi1:~$ hadoop fs -ls /
+```
+
+- Stop the single node cluster using:
+```console
+pi@pi1:~$ stop-dfs && stop-yarn.sh
+```
+
+### 5. Silence Warnings (as a result of 32-bit Hadoop build w/ 64-bit OS)
+- Modify Hadoop environment configuration:
+```console
+pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hadoop-env.sh
+```
+- Change:
+```shell
+# export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true"
+```
+- To:
+```shell
+export HADOOP_OPTS="-XX:-PrintWarnings –Djava.net.preferIPv4Stack=true"
+```
+
+- Now in the `~/.bashrc`, add to the bottom:
+```shell
+export HADOOP_HOME_WARN_SUPPRESS=1
+export HADOOP_ROOT_LOGGER="WARN,DRFA" 
+```
+
+- Source `~/.bashrc`:
+```console
+pi@pi1:~$ source ~/.bashrc
+```
+
+- Copy `.bashrc` to other nodes in the cluster:
+```console
+pi@pi1:~$ clusterscp ~/.bashrc
+```
+
+### 6. Create Hadoop Cluster directories (Multi-node Setup).
+```console
+pi@pi1:~$ clustercmd sudo mkdir -p /opt/hadoop_tmp/hdfs
+pi@pi1:~$ clustercmd sudo chown pi:pi –R /opt/hadoop_tmp
+pi@pi1:~$ clustercmd sudo mkdir -p /opt/hadoop
+pi@pi1:~$ clustercmd sudo chown pi:pi /opt/hadoop
+```
+
+### 7. Copy Hadoop files to the other nodes.
+```console
+pi@pi1:~$ for pi in $(otherpis); do rsync -avxP $HADOOP_HOME $pi:/opt; done
+```
+-Verify install on other nodes:
+```console
+pi@pi1:~$ clustercmd hadoop version | grep Hadoop
+Hadoop 3.2.1
+Hadoop 3.2.1
+Hadoop 3.2.1
+Hadoop 3.2.1
+```
+
+### 8. Modify Hadoop configuration files for cluster setup.
