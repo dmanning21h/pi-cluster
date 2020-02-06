@@ -93,20 +93,20 @@ pi@piX:~$ cat ~/.ssh/id_ed25519.pub >> | ssh pi@192.168.0.101 'cat >> .ssh/autho
 
 ### 10. (Back on Pi1) Append this Pi's public key to the file as well.
 ```console
-pi@piX:~$ cat ~/.ssh/id_ed25519.pub >> .ssh/authorized_keys
+pi@pi1:~$ cat ~/.ssh/id_ed25519.pub >> .ssh/authorized_keys
 ```
 
-### 11. Copy `authorized_keys` file and `ssh` configuration to all other nodes in the cluster.
+### 11. Copy `authorized_keys` file and `ssh` configuration to all other nodes (2-4) in the cluster.
 ```console
-pi@piX:~$ scp ~/.ssh/authorized_keys piX:~/.ssh/authorized_keys
-pi@piX:~$ scp ~/.ssh/config piX:~/.ssh/config
+pi@pi1:~$ scp ~/.ssh/authorized_keys piX:~/.ssh/authorized_keys
+pi@pi1:~$ scp ~/.ssh/config piX:~/.ssh/config
 ```
 - Now all devices in the cluster will be able to `ssh` into each other without requiring a password.
 
 ### 12. Create additional functions to improve the ease of use of the cluster.
 - To do this, we will create some new shell functions within the `.bashrc` file.
 ```console
-pi@piX:~$ sudo mousepad ~/.bashrc
+pi@pi1:~$ sudo mousepad ~/.bashrc
 ```
 #### `otherpis`
 - Add to the end of the file:
