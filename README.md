@@ -219,7 +219,7 @@ pi@pi1:~$ cd && hadoop version | grep Hadoop
 Hadoop 3.2.1
 ```
 
-## Part 4: Setting up and Testing Hadoop Cluster
+## Part 4: Setting up Hadoop Cluster
 
 ### 1. Setup Hadoop Distributed File System (HDFS) configuration files (Single Node Setup to start).
 - All of the following files are located within `/opt/hadoop/etc/hadoop`.
@@ -440,7 +440,7 @@ pi4
 ```console
 pi@pi1:~$ sudo mousepad /etc/hosts
 ```
-- Remove the line:
+- Remove the line (All nodes will have identical host configuration):
 ```shell
 127.0.1.1 pi1
 ```
@@ -464,6 +464,68 @@ pi@pi1:~$ start-dfs.sh && start-yarn.sh
 2. `SecondaryNamenode`
 3. `NodeManager`
 4. `jps`
-- With the following having been offloaded to the datanodes:
-1. 
-2.
+- With the following having been offloaded to the datanodes, as you'll see if you `ssh` into and perform a `jps`:
+1. `Datanode`
+2. `ResourceManager`
+3. `jps`
+
+### 13. Modify `clusterreboot` and `clustershutdown` to shutdown Hadoop cluster gently.
+#### `clusterreboot`
+```shell
+function clusterreboot {
+  stop-yarn.sh && stop-dfs.sh && \
+  clustercmd sudo shutdown -r now
+}
+```
+#### `clustershutdown`
+```shell
+function clustershutdown {
+  stop-yarn.sh && stop-dfs.sh && \
+  clustercmd sudo shutdown now
+}
+```
+
+## Part 5: Testing the Hadoop Cluster (Wordcount Example)
+
+### 1. Start cluster, if not active already.
+```terminal
+pi@pi1:~$ start-hdfs.sh && start-yarn.sh
+```
+
+### 2. Make data directories.
+- To test the Hadoop cluster, we will deploy a sample wordcount job to count word frequencies from several books obtained from the [Gutenberg Project](https://www.gutenberg.org/).
+- First, make the HDFS directories for the data.
+```terminal
+pi@pi1:~$ hdfs dfs -mkdir -p /user/pi
+pi@pi1:~$ hdfs dfs -mkdir books
+```
+
+### 3. Download books files.
+```terminal
+pi@pi1:~$ cd /opt/hadoop
+pi@pi1:/opt/hadoop$ wget -O alice.txt https://www.gutenberg/org/files/11/11-0.txt
+pi@pi1:/opt/hadoop$ wget -O holmes.txt https://www.gutenberg/org/files/1661/1661-0.txt
+pi@pi1:/opt/hadoop$ wget -O frankenstein.txt https://www.gutenberg/org/files/84/84-0.txt
+```
+
+### 4. Upload book files to the HDFS.
+```terminal
+pi@pi1:/opt/hadoop$ hdfs dfs -put alice.txt holmes.txt frankenstein.txt books
+pi@pi1:/opt/hadoop$ hdfs dfs -ls books
+```
+
+### 5. Read one of the books from the HDFS.
+```terminal
+pi@pi1:/opt/hadoop$ hdfs dfs -cat books/alice.txt
+```
+
+### 6. Monitor status of cluster and jobs.
+- You can monitor the status of all jobs deployed to the cluster via the YARN web UI: http://pi1:8088
+- And the status of the cluster in general via the HDFS web UI: http://pi1:9870
+
+### 7. Deploy sample MapReduce job to cluster.
+ 
+
+
+
+
