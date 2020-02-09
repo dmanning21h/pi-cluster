@@ -200,6 +200,8 @@ pi@pi1:~$ sudo mousepad ~/.bashrc
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf/
 export HADOOP_HOME=/opt/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
 ```
 
 ### 4. Initialize `JAVA_HOME` for Hadoop environment.
@@ -369,3 +371,99 @@ Hadoop 3.2.1
 ```
 
 ### 8. Modify Hadoop configuration files for cluster setup.
+#### `core-site.xml`
+```console
+pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
+```
+```shell
+<configuration>
+
+</configuration>
+```
+
+#### `hdfs-site.xml`
+```console
+pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hdfs-site.xml
+```
+```shell
+<configuration>
+
+</configuration> 
+```
+
+#### `mapred-site.xml`
+```console
+pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/mapred-site.xml
+```
+```shell
+<configuration>
+
+</configuration>
+```
+
+#### `yarn-site.xml`
+```console
+pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/yarn-site.xml
+```
+```shell
+<configuration>
+
+</configuration> 
+```
+
+### 9. Clean `datanode` and `namenode` directories.
+```console
+pi@pi1:~$ clustercmd rm -rf /opt/hadoop_tmp/hdfs/datanode/*
+pi@pi1:~$ clustercmd rm -rf /opt/hadoop_tmp/hdfs/namenode/*
+```
+
+### 10. Create/edit `master` amd `worker` files.
+```console
+pi@pi1:~$ cd $HADOOP_HOME/etc/hadoop
+pi@pi1:/opt/hadoop/etc/hadoop$ mousepad master
+```
+- Add single line to file:
+```shell
+pi1
+```
+```console
+pi@pi1:/opt/hadoop/etc/hadoop$ mousepad workers
+```
+- Add other pi hostnames to the file:
+```shell
+pi2
+pi3
+pi4
+```
+
+### 11. Edit `hosts` file.
+```console
+pi@pi1:~$ sudo mousepad /etc/hosts
+```
+- Remove the line:
+```shell
+127.0.1.1 pi1
+```
+- Copy updated file to the other cluster nodes:
+```console
+pi@pi1:~$ clusterscp /etc/hosts
+```
+
+- Now reboot the cluster:
+```console
+pi@pi1:~$ clusterreboot
+```
+
+### 12. Format and start multi-node cluster.
+```console
+pi@pi1:~$ hdfs namenode -format -force
+pi@pi1:~$ start-dfs.sh && start-yarn.sh
+```
+- Now since we have configured Hadoop on a multi-node cluster, when we use `jps` on the master node (pi1), only the following processes will be running:
+1. `Namenode`
+2. `SecondaryNamenode`
+3. `NodeManager`
+4. `jps`
+- With the following having been offloaded to the datanodes:
+1. 
+2.
