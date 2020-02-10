@@ -521,17 +521,82 @@ pi@pi1:/opt/hadoop$ hdfs dfs -cat books/alice.txt
 <!--Insert screenshot-->
 
 ### 7. Deploy sample MapReduce job to cluster.
-
-
-
+```console
+pi@pi1:/opt/hadoop$ yarn jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar wordcounts "books/*" output
+```
+### 8. View output of job.
+```console
+pi@pi1:/opt/hadoop$ hdfs dfs -ls output
+pi@pi1:/opt/hadoop$ hdfs dfs -cat output/part-r-0000 | less
+```
 
 ## Part 6: Install Spark on the Cluster.
+### 1. Download Spark, unpack, and give `pi` ownership.
+```console
+pi@pi1:~$ cd && wget https://www-us.apache.org/dist/spark/spark-2.4.4/spark-2.4.4-bin-hadoop-2.7.tgz
+pi@pi1:~$ sudo tar -xvf spark-2.4.4-bin-hadoop-2.7.tgz -C /opt/
+pi@pi1:~$ rm spark-2.4.4-bin-hadoop-2.7.tgz && cd /opt
+pi@pi1:~$ sudo mv spark-2.4.4-bin-hadoop-2.7 spark
+pi@pi1:~$ sudo chown pi:pi -R /opt/spark
+```
 
+### 2. Configure Spark Environment variables.
+```console
+pi@pi1:~$ sudo mousepad ~/.bashrc
+```
+- Add (insert at top of file):
+```shell
+export SPARK_HOME=/opt/spark
+export PATH=$PATH:$SPARK_HOME/bin
+```
 
+### 3. Validate Spark install.
+```console
+pi@pi1:~$ source ~/.bashrc
+pi@pi1:~$ spark-shell --version
+```
 
 ## Part 7: Test Spark on the Cluster (Approximating Pi).
+### 1. Configure Spark job monitoring.
+- Similar to Hadoop, Spark also offers the ability to monitor the jobs you deploy. However, with Spark we will have to manually configure the monitoring options.
+- Generate then modify the Spark default configuration file:
+```console
+pi@pi1:~$ cd $SPARK_HOME/conf
+pi@pi1:/opt/spark/conf$ sudo mv spark-defaults.conf.template spark-defaults.conf
+pi@pi1:/opt/spark/conf$ mousepad spark-defaults.conf
+```
+- Add the following lines:
+```shell
+spark.master                       yarn
+spark.driver.memory                465m
+spark.yarn.am.memory               356m
+spark.executor.memory              465m
+spark.executor.cores               4
 
+spark.eventLog.enabled             true
+spark.eventLog.dir                 hdfs://pi1:9000/spark-logs
+spark.history.provider             org.apache.spark.deploy.history.FsHistoryProvider
+spark.history.fs.logDirectory      hdfs://pi1:9000/spark-logs
+spark.history.fs.update.interval   10s
+spark.history.ui.port              18080
+```
 
+### 2. Make logging directory on HDFS.
+```console
+pi@pi1:/opt/spark/conf$ cd
+pi@pi1:~$ hdfs dfs -mkdir /spark-logs
+```
+
+### 3. Start Spark history server.
+```console
+pi@pi1:~$ $SPARK_HOME/sbin/start-history-server.sh
+```
+- The Spark history server UI can be accessed at: http://pi1:18080
+
+### 4. Run sample job.
+```console
+pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_2.11-2.4.4.jar 7
+```
 
 ## Part 8: Acquiring [Sloan Digital Sky Survey (SDSS)](https://www.sdss.org/) Data.
 
