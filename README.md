@@ -584,19 +584,22 @@ pi@pi1:/opt/hadoop$ hdfs dfs -cat books/alice.txt
 
 ### 6. Monitor status of cluster and jobs.
 - You can monitor the status of all jobs deployed to the cluster via the YARN web UI: http://pi1:8088
-<!--Insert screenshot-->
+![Yarn Web UI](/pictures/yarn-ui.png)
+
 - And the status of the cluster in general via the HDFS web UI: http://pi1:9870
-<!--Insert screenshot-->
+![HDFS Web UI](/pictures/hdfs-ui.png)
 
 ### 7. Deploy sample MapReduce job to cluster.
 ```console
 pi@pi1:/opt/hadoop$ yarn jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar wordcounts "books/*" output
 ```
+
 ### 8. View output of job.
 ```console
 pi@pi1:/opt/hadoop$ hdfs dfs -ls output
 pi@pi1:/opt/hadoop$ hdfs dfs -cat output/part-r-0000 | less
 ```
+![Hadoop Test](/pictures/hadoop-test.png)
 
 ## Part 6: Install Spark on the Cluster.
 ### 1. Download Spark, unpack, and give `pi` ownership.
@@ -673,16 +676,20 @@ pi@pi1:~$ hdfs dfs -mkdir /spark-logs
 pi@pi1:~$ $SPARK_HOME/sbin/start-history-server.sh
 ```
 - The Spark history server UI can be accessed at: http://pi1:18080
+![Spark History UI](/pictures/spark-history-ui.png)
 
 ### 4. Run sample job.
 ```console
 pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_2.11-2.4.4.jar 7
 ```
+![Spark Test](/pictures/spark-test.png)
 
 ## Part 8: Acquiring [Sloan Digital Sky Survey (SDSS)](https://www.sdss.org/) Data.
-- The data I will be using to train and test a machine learning classifier is from the Sloan Digital Sky Survey (Data Release 16), a major multi-spectral imaging and spectroscopic redshift survey of galactic entities (Stars, Galaxies, Quasars). 
+- The data I will be using to train and test a machine learning classifier is from the Sloan Digital Sky Survey (Data Release 16), a major multi-spectral imaging and spectroscopic redshift survey of different galactic masses (Stars, Galaxies, Quasars).
+<br />
 ![SDSS Telescope](/pictures/sdss_gaulme1.jpg)
-
+<br />
+- 
 
 
 ## Part 9: Installing Python Packages and Jupyter Notebook on Master node.
