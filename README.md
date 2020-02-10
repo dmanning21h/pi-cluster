@@ -373,7 +373,10 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```
 ```shell
 <configuration>
-
+  <property>
+    <name>fs.default.name</name>
+    <value>hdfs://pi1:9000</value>
+  </property>
 </configuration>
 ```
 
@@ -383,7 +386,18 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hdfs-site.xml
 ```
 ```shell
 <configuration>
-
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>/opt/hadoop_tmp/hdfs/datanode</value>
+  </property>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>/opt/hadoop_tmp/hdfs/namenode</value>
+  </property>
+  <property>
+    <name>dfs.replication</name>
+    <value>4</value>
+  </property>
 </configuration> 
 ```
 
@@ -393,7 +407,34 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/mapred-site.xml
 ```
 ```shell
 <configuration>
-
+  <property>
+    <name>mapreduce.framework.name</name>
+      <value>yarn</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+      <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+  </property>
+  <property>
+    <name>mapreduce.map.env</name>
+      <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.env</name>
+      <value>HADOOP_MAPRED_HOME=$HADOOP_HOME</value>
+  </property>
+  <property>
+    <name>yarn.app.mapreduce.am.resource.mb</name>
+      <value>512</value>
+  </property>
+  <property>
+    <name>mapreduce.map.memory.mb</name>
+      <value>256</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.memory.mb</name>
+      <value>256</value>
+  </property>
 </configuration>
 ```
 
@@ -403,7 +444,34 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/yarn-site.xml
 ```
 ```shell
 <configuration>
-
+  <property>
+    <name>yarn.acl.enable</name>
+    <value>0</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+      <value>pi1</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+      <value>mapreduce_shuffle</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+      <value>1536</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+      <value>1536</value>
+  </property>
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+      <value>128</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+      <value>false</value>
+  </property>
 </configuration> 
 ```
 
@@ -458,11 +526,11 @@ pi@pi1:~$ start-dfs.sh && start-yarn.sh
 - Now since we have configured Hadoop on a multi-node cluster, when we use `jps` on the master node (pi1), only the following processes will be running:
 1. `Namenode`
 2. `SecondaryNamenode`
-3. `NodeManager`
+3. `ResourceManager`
 4. `jps`
 - With the following having been offloaded to the datanodes, as you'll see if you `ssh` into and perform a `jps`:
 1. `Datanode`
-2. `ResourceManager`
+2. `NodeManager`
 3. `jps`
 
 ### 13. Modify `clusterreboot` and `clustershutdown` to shutdown Hadoop cluster gently.
@@ -554,6 +622,19 @@ export PATH=$PATH:$SPARK_HOME/bin
 ```console
 pi@pi1:~$ source ~/.bashrc
 pi@pi1:~$ spark-shell --version
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /___/ .__/\_,_/_/ /_/\_\   version 2.4.4
+      /_/
+                       
+Using Scala version 2.11.12, OpenJDK Client VM, 1.8.0_212
+Branch
+Compiled by user  on 2019-08-27T21:21:38Z
+Revision
+Url
+Type --help for more information.
 ```
 
 ## Part 7: Test Spark on the Cluster (Approximating Pi).
@@ -568,9 +649,9 @@ pi@pi1:/opt/spark/conf$ mousepad spark-defaults.conf
 - Add the following lines:
 ```shell
 spark.master                       yarn
-spark.driver.memory                465m
-spark.yarn.am.memory               356m
-spark.executor.memory              465m
+spark.driver.memory                512m
+spark.yarn.am.memory               512m
+spark.executor.memory              512m
 spark.executor.cores               4
 
 spark.eventLog.enabled             true
