@@ -2,7 +2,6 @@
 Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine Learning.
 
 ## Part 1: Hardware and Setup.
-
 ### 1. Hardware for my implementation:
  - (4) Raspberry Pi 4, 4GB Version
  - (4) 32GB MicroSD Card
@@ -21,7 +20,6 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
 ![My Setup](/pictures/setup.jpeg)
 
 ## Part 2: Passwordless SSH.
-
 ### 1. (Starting with Pi #1) Setup wireless internet connection.
 
 ### 2. Assign static IP address to the ethernet interface.
@@ -171,7 +169,6 @@ pi@pi1:~$ clusterscp ~/.bashrc
 ```
 
 ## Part 3: Installing Hadoop.
-
 ### 1. Install Java 8 on each node, make this each node's default Java.
 - The latest Raspian (Buster) comes with Java 11 pre-installed. However, the latest Hadoop version (3.2.1) that 
 we will be using only supports Java 8. To resolve this issue we will install OpenJDK 8 and make this the default 
@@ -220,7 +217,6 @@ Hadoop 3.2.1
 ```
 
 ## Part 4: Setting up Hadoop Cluster
-
 ### 1. Setup Hadoop Distributed File System (HDFS) configuration files (Single Node Setup to start).
 - All of the following files are located within `/opt/hadoop/etc/hadoop`.
 
@@ -486,22 +482,21 @@ function clustershutdown {
 ```
 
 ## Part 5: Testing the Hadoop Cluster (Wordcount Example)
-
 ### 1. Start cluster, if not active already.
-```terminal
+```console
 pi@pi1:~$ start-hdfs.sh && start-yarn.sh
 ```
 
 ### 2. Make data directories.
 - To test the Hadoop cluster, we will deploy a sample wordcount job to count word frequencies from several books obtained from the [Gutenberg Project](https://www.gutenberg.org/).
 - First, make the HDFS directories for the data.
-```terminal
+```console
 pi@pi1:~$ hdfs dfs -mkdir -p /user/pi
 pi@pi1:~$ hdfs dfs -mkdir books
 ```
 
 ### 3. Download books files.
-```terminal
+```console
 pi@pi1:~$ cd /opt/hadoop
 pi@pi1:/opt/hadoop$ wget -O alice.txt https://www.gutenberg/org/files/11/11-0.txt
 pi@pi1:/opt/hadoop$ wget -O holmes.txt https://www.gutenberg/org/files/1661/1661-0.txt
@@ -509,23 +504,43 @@ pi@pi1:/opt/hadoop$ wget -O frankenstein.txt https://www.gutenberg/org/files/84/
 ```
 
 ### 4. Upload book files to the HDFS.
-```terminal
+```console
 pi@pi1:/opt/hadoop$ hdfs dfs -put alice.txt holmes.txt frankenstein.txt books
 pi@pi1:/opt/hadoop$ hdfs dfs -ls books
 ```
 
 ### 5. Read one of the books from the HDFS.
-```terminal
+```console
 pi@pi1:/opt/hadoop$ hdfs dfs -cat books/alice.txt
 ```
 
 ### 6. Monitor status of cluster and jobs.
 - You can monitor the status of all jobs deployed to the cluster via the YARN web UI: http://pi1:8088
+<!--Insert screenshot-->
 - And the status of the cluster in general via the HDFS web UI: http://pi1:9870
+<!--Insert screenshot-->
 
 ### 7. Deploy sample MapReduce job to cluster.
- 
 
 
+
+
+## Part 6: Install Spark on the Cluster.
+
+
+
+## Part 7: Test Spark on the Cluster (Approximating Pi).
+
+
+
+## Part 8: Acquiring [Sloan Digital Sky Survey (SDSS)](https://www.sdss.org/) Data.
+
+
+
+## Part 9: Installing Python Packages and Jupyter Notebook on Master node.
+
+
+
+## Part 10: Stars, Galaxies, and Quasars: Using PySpark to Classify SDSS Data.
 
 
