@@ -599,6 +599,8 @@ pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.Sp
 ```
 
 ## Part 8: Acquiring [Sloan Digital Sky Survey (SDSS)](https://www.sdss.org/) Data.
+- The data I will be using to train and test a machine learning classifier is from the Sloan Digital Sky Survey (Data Release 16), a major multi-spectral imaging and spectroscopic redshift survey of galactic entities (Stars, Galaxies, Quasars). 
+![SDSS Telescope](/pictures/sdss_gaulme1.jpg)
 
 
 
