@@ -26,9 +26,11 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
 ```console
 pi@raspberrypi:~$ sudo mousepad /etc/dhcpcd.conf
 ```
-- Uncomment: <br />
-`interface eth0` <br />
-`static ip_address=192.168.0.10X/24` <br />
+- Uncomment:
+```
+interface eth0
+static ip_address=192.168.0.10X/24
+```
 - Where X is the respective Raspberry Pi # (e.g. 1, 2, 3, 4)
 
 ### 3. Enable SSH.
@@ -39,11 +41,13 @@ pi@raspberrypi:~$ sudo mousepad /etc/dhcpcd.conf
 pi@raspberrypi:~$ sudo mousepad /etc/hosts
 ```
 - Change `raspberrypi` to `piX`
-- Add all IPs and hostnames to bottom of file <br />
-`192.168.0.101  pi1` <br />
-`192.168.0.102  pi2` <br />
-`192.168.0.103  pi3` <br />
-`192.168.0.104  pi4` <br />
+- Add all IPs and hostnames to bottom of file
+```
+192.168.0.101  pi1
+192.168.0.102  pi2
+192.168.0.103  pi3
+192.168.0.104  pi4
+```
 
 ### 5. Change the Pi's hostname to be its respective Pi #.
 ```console
@@ -73,10 +77,12 @@ pi@pi1:~$ exit
 ```console
 pi@pi1:~$ sudo mousepad ~/.ssh/config
 ```
-- Add hostname, user, and IP address for each node in the network (repeated 4x in my case). <br />
-`Host  piX` <br />
-`User  pi` <br />
-`Hostname 192.168.0.10X` <br />
+- Add hostname, user, and IP address for each node in the network (repeated 4x in my case).
+```
+Host  piX
+User  pi
+Hostname 192.168.0.10X
+```
 
 ### 8. Create authentication key pairs for `ssh`.
 ```console
@@ -108,7 +114,7 @@ pi@pi1:~$ sudo mousepad ~/.bashrc
 ```
 #### `otherpis`
 - Add to the end of the file:
-```shell
+```
 function otherpis {
   grep "pi" /etc/hosts | awk '{print $2}' | grep -v $(hostname)
 }
@@ -124,7 +130,7 @@ pi4
 #### `clustercmd`
 - This command will run the specified command on all other nodes in the cluster, and then itself.
 - In `~/.bashrc`:
-```shell
+```
 function clustercmd {
   for pi in $(otherpis); do ssh $pi "$@"; done
   $@
@@ -142,7 +148,7 @@ Sun 26 Jan 2020 12:56:58 PM EST
 
 #### `clusterreboot` and `clustershutdown`
 - Reboot and shutdown all nodes in the cluster.
-```shell
+```
 function clusterreboot {
   clustercmd sudo shutdown -r now
 }
@@ -154,7 +160,7 @@ function clustershutdown {
 
 #### `clusterscp`
 - Copies files from one device to every other node in the cluster.
-```shell
+```
 function clusterscp { 
   for pi in $(otherpis); do
     cat $1 | ssh $pi "sudo tee $1" > /dev/null 2>&1
@@ -193,7 +199,7 @@ pi@pi1:/opt$ sudo chown pi:pi -R /opt/hadoop
 pi@pi1:~$ sudo mousepad ~/.bashrc
 ```
 - Add (insert at top of file):
-```shell
+```
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf/
 export HADOOP_HOME=/opt/hadoop
 export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
@@ -205,7 +211,7 @@ export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
 ```console
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hadoop-env.sh
 ```
-```shell
+```
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-armhf/
 ```
 
@@ -225,7 +231,7 @@ Hadoop 3.2.1
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```
 - Modify end of file to be:
-```shell
+```
 <configuration>
   <property>
     <name>fs.defaultFS</name>
@@ -235,7 +241,7 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```
 
 #### `hdfs-site.xml`
-```shell
+```
 <configuration>
   <property>
     <name>dfs.datanode.data.dir</name>
@@ -253,7 +259,7 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```
 
 #### `mapred-site.xml`
-```shell
+```
 <configuration>
   <property>
     <name>mapreduce.framework.name</name>
@@ -263,7 +269,7 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```
 
 #### `yarn-site.xml`
-```shell
+```
 <configuration>
   <property>
     <name>yarn.nodemanager.aux-services</name>
@@ -321,16 +327,16 @@ pi@pi1:~$ stop-dfs && stop-yarn.sh
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hadoop-env.sh
 ```
 - Change:
-```shell
+```
 # export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true"
 ```
 - To:
-```shell
+```
 export HADOOP_OPTS="-XX:-PrintWarnings –Djava.net.preferIPv4Stack=true"
 ```
 
 - Now in the `~/.bashrc`, add to the bottom:
-```shell
+```
 export HADOOP_HOME_WARN_SUPPRESS=1
 export HADOOP_ROOT_LOGGER="WARN,DRFA" 
 ```
@@ -371,7 +377,7 @@ Hadoop 3.2.1
 ```console
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```
-```shell
+```
 <configuration>
   <property>
     <name>fs.default.name</name>
@@ -384,7 +390,7 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/core-site.xml
 ```console
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hdfs-site.xml
 ```
-```shell
+```
 <configuration>
   <property>
     <name>dfs.datanode.data.dir</name>
@@ -405,7 +411,7 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/hdfs-site.xml
 ```console
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/mapred-site.xml
 ```
-```shell
+```
 <configuration>
   <property>
     <name>mapreduce.framework.name</name>
@@ -442,7 +448,7 @@ pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/mapred-site.xml
 ```console
 pi@pi1:~$ sudo mousepad /opt/hadoop/etc/hadoop/yarn-site.xml
 ```
-```shell
+```
 <configuration>
   <property>
     <name>yarn.acl.enable</name>
@@ -487,14 +493,14 @@ pi@pi1:~$ cd $HADOOP_HOME/etc/hadoop
 pi@pi1:/opt/hadoop/etc/hadoop$ mousepad master
 ```
 - Add single line to file:
-```shell
+```
 pi1
 ```
 ```console
 pi@pi1:/opt/hadoop/etc/hadoop$ mousepad workers
 ```
 - Add other pi hostnames to the file:
-```shell
+```
 pi2
 pi3
 pi4
@@ -505,7 +511,7 @@ pi4
 pi@pi1:~$ sudo mousepad /etc/hosts
 ```
 - Remove the line (All nodes will have identical host configuration):
-```shell
+```
 127.0.1.1 pi1
 ```
 - Copy updated file to the other cluster nodes:
@@ -535,14 +541,14 @@ pi@pi1:~$ start-dfs.sh && start-yarn.sh
 
 ### 13. Modify `clusterreboot` and `clustershutdown` to shutdown Hadoop cluster gently.
 #### `clusterreboot`
-```shell
+```
 function clusterreboot {
   stop-yarn.sh && stop-dfs.sh && \
   clustercmd sudo shutdown -r now
 }
 ```
 #### `clustershutdown`
-```shell
+```
 function clustershutdown {
   stop-yarn.sh && stop-dfs.sh && \
   clustercmd sudo shutdown now
@@ -616,7 +622,7 @@ pi@pi1:~$ sudo chown pi:pi -R /opt/spark
 pi@pi1:~$ sudo mousepad ~/.bashrc
 ```
 - Add (insert at top of file):
-```shell
+```
 export SPARK_HOME=/opt/spark
 export PATH=$PATH:$SPARK_HOME/bin
 ```
@@ -650,7 +656,7 @@ pi@pi1:/opt/spark/conf$ sudo mv spark-defaults.conf.template spark-defaults.conf
 pi@pi1:/opt/spark/conf$ mousepad spark-defaults.conf
 ```
 - Add the following lines:
-```shell
+```
 spark.master                       yarn
 spark.driver.memory                512m
 spark.yarn.am.memory               512m
