@@ -691,6 +691,7 @@ pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.Sp
 ![Spark Test](/pictures/spark-test.png)
 
 ## Part 8: Acquiring [Sloan Digital Sky Survey (SDSS)](https://www.sdss.org/) Data.
+### 1. The Data
 - The data I will be using to train and test a machine learning classifier is from the Sloan Digital Sky Survey (Data Release 16), a major multi-spectral imaging and spectroscopic redshift survey of different celestial bodies (Stars, Galaxies, Quasars).
 
 ![SDSS Telescope](/pictures/sdss_gaulme1.jpg)
@@ -698,6 +699,8 @@ pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.Sp
 - An abundance of data and features are collected each time the telescope captures images. In addition to capturing light in the visible spectrum, the telescope records the galactic coordinates of the body, five distinct wavelength bands emitted from the body, the redshift of the object, and many different metadata regarding how and when the images and data were captured. All of the data is freely obtainable in a variety of ways via the SDSS website, for my use I will use a SQL query to obtain all of my data from their databases. Along with the spectral information stored within their databases, the SDSS also offers helpful image visualization functionality for the objects that are captured. Below is one such example of the visualization with a galaxy.
 
 ![Galaxy Visualized Example](/pictures/galaxy-data-example.PNG)
+
+### 2. SQL Querying [SDSS SkyServer DR16](http://skyserver.sdss.org/dr16/en/home.aspx).
 
 ## Part 9: Installing Python Packages and Jupyter Notebook on Master node.
 
