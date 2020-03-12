@@ -3,10 +3,10 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
 
 ## Part 1: Hardware and Setup.
 ### 1. Hardware for my implementation:
- - (4) Raspberry Pi 4, 4GB Version
- - (4) 32GB MicroSD Card
- - (4) USB-C Power Supply
- - (4) 1ft Ethernet cable
+ - (5) Raspberry Pi 4, 4GB Version
+ - (5) 32GB MicroSD Card
+ - (5) USB-C Power Supply
+ - (5) 1ft Ethernet cable
  - (1) Raspberry Pi Cluster Case
  - (1) Gigabit Ethernet Switch
  - (1) Keyboard+Mouse combination
@@ -31,7 +31,7 @@ pi@raspberrypi:~$ sudo mousepad /etc/dhcpcd.conf
 interface eth0
 static ip_address=192.168.0.10X/24
 ```
-- Where X is the respective Raspberry Pi # (e.g. 1, 2, 3, 4)
+- Where X is the respective Raspberry Pi # (e.g. 1, 2, 3, 4, 5)
 
 ### 3. Enable SSH.
 - From Raspberry Pi dropdown menu (Top left corner of desktop): Preferences -> Config -> Interfaces -> Enable SSH
@@ -47,6 +47,7 @@ pi@raspberrypi:~$ sudo mousepad /etc/hosts
 192.168.0.102  pi2
 192.168.0.103  pi3
 192.168.0.104  pi4
+192.168.0.105  pi5
 ```
 
 ### 5. Change the Pi's hostname to be its respective Pi #.
@@ -77,7 +78,7 @@ pi@pi1:~$ exit
 ```console
 pi@pi1:~$ sudo mousepad ~/.ssh/config
 ```
-- Add hostname, user, and IP address for each node in the network (repeated 4x in my case).
+- Add hostname, user, and IP address for each node in the network (repeated 5x in my case).
 ```
 Host  piX
 User  pi
@@ -92,7 +93,7 @@ pi@piX:~$ ssh-keygen -t ed25519
 ### 9. Repeat steps 1-8 on the rest of the Pis.
 - Once completed up to creating authentication pairs, append each Pi's public key to pi1's `authorized_keys` file.
 ```console
-pi@piX:~$ cat ~/.ssh/id_ed25519.pub >> | ssh pi@192.168.0.101 'cat >> .ssh/authorized_keys'
+pi@piX:~$ cat ~/.ssh/id_ed25519.pub | ssh pi@192.168.0.101 'cat >> .ssh/authorized_keys'
 ```
 
 ### 10. (Back on Pi1) Append this Pi's public key to the file as well.
@@ -126,6 +127,7 @@ pi@pi1:~$ otherpis
 pi2
 pi3
 pi4
+pi5
 ```
 #### `clustercmd`
 - This command will run the specified command on all other nodes in the cluster, and then itself.
@@ -139,6 +141,7 @@ function clustercmd {
 ```console
 pi@pi1:~$ source ~/.bashrc
 pi@pi1:~$ clustercmd date
+Sun 26 Jan 2020 12:56:58 PM EST
 Sun 26 Jan 2020 12:56:58 PM EST
 Sun 26 Jan 2020 12:56:58 PM EST
 Sun 26 Jan 2020 12:56:58 PM EST
@@ -370,6 +373,7 @@ Hadoop 3.2.1
 Hadoop 3.2.1
 Hadoop 3.2.1
 Hadoop 3.2.1
+Hadoop 3.2.1
 ```
 
 ### 8. Modify Hadoop configuration files for cluster setup.
@@ -504,6 +508,7 @@ pi@pi1:/opt/hadoop/etc/hadoop$ mousepad workers
 pi2
 pi3
 pi4
+pi5
 ```
 
 ### 11. Edit `hosts` file.
@@ -597,13 +602,13 @@ pi@pi1:/opt/hadoop$ hdfs dfs -cat books/alice.txt
 
 ### 7. Deploy sample MapReduce job to cluster.
 ```console
-pi@pi1:/opt/hadoop$ yarn jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar wordcounts "books/*" output
+pi@pi1:/opt/hadoop$ yarn jar /opt/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.1.jar wordcount "books/*" output
 ```
 
 ### 8. View output of job.
 ```console
 pi@pi1:/opt/hadoop$ hdfs dfs -ls output
-pi@pi1:/opt/hadoop$ hdfs dfs -cat output/part-r-0000 | less
+pi@pi1:/opt/hadoop$ hdfs dfs -cat output/part-r-00000 | less
 ```
 ![Hadoop Test](/pictures/hadoop-test.png)
 
