@@ -3,10 +3,10 @@ Project to design a Raspberry Pi 4 Cluster using Spark for Distributed Machine L
 
 ## Part 1: Hardware and Setup.
 ### 1. Hardware for my implementation:
- - (5) Raspberry Pi 4, 4GB Version
- - (5) 32GB MicroSD Card
- - (5) USB-C Power Supply
- - (5) 1ft Ethernet cable
+ - (4) Raspberry Pi 4, 4GB Version
+ - (4) 32GB MicroSD Card
+ - (4) USB-C Power Supply
+ - (4) 1ft Ethernet cable
  - (1) Raspberry Pi Cluster Case
  - (1) Gigabit Ethernet Switch
  - (1) Keyboard+Mouse combination
@@ -31,7 +31,7 @@ pi@raspberrypi:~$ sudo mousepad /etc/dhcpcd.conf
 interface eth0
 static ip_address=192.168.0.10X/24
 ```
-- Where X is the respective Raspberry Pi # (e.g. 1, 2, 3, 4, 5)
+- Where X is the respective Raspberry Pi # (e.g. 1, 2, 3, 4)
 
 ### 3. Enable SSH.
 - From Raspberry Pi dropdown menu (Top left corner of desktop): Preferences -> Config -> Interfaces -> Enable SSH
@@ -47,7 +47,6 @@ pi@raspberrypi:~$ sudo mousepad /etc/hosts
 192.168.0.102  pi2
 192.168.0.103  pi3
 192.168.0.104  pi4
-192.168.0.105  pi5
 ```
 
 ### 5. Change the Pi's hostname to be its respective Pi #.
@@ -78,7 +77,7 @@ pi@pi1:~$ exit
 ```console
 pi@pi1:~$ sudo mousepad ~/.ssh/config
 ```
-- Add hostname, user, and IP address for each node in the network (repeated 5x in my case).
+- Add hostname, user, and IP address for each node in the network (repeated 4x in my case).
 ```
 Host  piX
 User  pi
@@ -127,7 +126,6 @@ pi@pi1:~$ otherpis
 pi2
 pi3
 pi4
-pi5
 ```
 #### `clustercmd`
 - This command will run the specified command on all other nodes in the cluster, and then itself.
@@ -141,7 +139,6 @@ function clustercmd {
 ```console
 pi@pi1:~$ source ~/.bashrc
 pi@pi1:~$ clustercmd date
-Sun 26 Jan 2020 12:56:58 PM EST
 Sun 26 Jan 2020 12:56:58 PM EST
 Sun 26 Jan 2020 12:56:58 PM EST
 Sun 26 Jan 2020 12:56:58 PM EST
@@ -373,7 +370,6 @@ Hadoop 3.2.1
 Hadoop 3.2.1
 Hadoop 3.2.1
 Hadoop 3.2.1
-Hadoop 3.2.1
 ```
 
 ### 8. Modify Hadoop configuration files for cluster setup.
@@ -508,7 +504,6 @@ pi@pi1:/opt/hadoop/etc/hadoop$ mousepad workers
 pi2
 pi3
 pi4
-pi5
 ```
 
 ### 11. Edit `hosts` file.
@@ -663,6 +658,7 @@ pi@pi1:/opt/spark/conf$ mousepad spark-defaults.conf
 - Add the following lines:
 ```
 spark.master                       yarn
+spark.executor.instances           4
 spark.driver.memory                512m
 spark.yarn.am.memory               512m
 spark.executor.memory              512m
@@ -706,7 +702,16 @@ pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.Sp
 ![Galaxy Visualized Example](/pictures/galaxy-data-example.PNG)
 
 ### 2. SQL Querying [SDSS SkyServer DR16](http://skyserver.sdss.org/dr16/en/home.aspx).
-
+- Navigate to the [SQL Search](http://skyserver.sdss.org/dr16/en/tools/search/sql.aspx) page.
+- The maximum numbers of entries that can be extracted into CSV format using this tool is 500,000, so will do that.
+```sql
+SELECT TOP 500000
+   p.objid, p.ra, p.dec, p.u, p.g, p.r, p.i, p.z, 
+   s.class, s.z as redshift
+FROM PhotoObj AS p
+   JOIN SpecObj AS s ON s.bestobjid = p.objid
+```
+- For a more detailed background on the data, refer to the above links, and also [here](http://skyserver.sdss.org/dr16/en/tools/getimg/getimghome.aspx).
 ## Part 9: Installing Python Packages and Jupyter Notebook on Master node.
 
 
