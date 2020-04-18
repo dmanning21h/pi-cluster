@@ -685,7 +685,7 @@ pi@pi1:~$ $SPARK_HOME/sbin/start-history-server.sh
 - The Spark history server UI can be accessed at: http://pi1:18080
 ![Spark History UI](/pictures/spark-history-ui.png)
 
-### 4. Run sample job.
+### 4. Run sample job (calculating pi).
 ```console
 pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.SparkPi $SPARK_HOME/examples/jars/spark-examples_2.11-2.4.4.jar 7
 ```
@@ -697,13 +697,13 @@ pi@pi1:~$ spark-submit --deploy-mode client --class org.apache.spark.examples.Sp
 
 ![SDSS Telescope](/pictures/sdss_gaulme1.jpg)
 
-- An abundance of data and features are collected each time the telescope captures images. In addition to capturing light in the visible spectrum, the telescope records the galactic coordinates of the body, five distinct wavelength bands emitted from the body, the redshift of the object, and many different metadata regarding how and when the images and data were captured. All of the data is freely obtainable in a variety of ways via the SDSS website, for my use I will use a SQL query to obtain all of my data from their databases. Along with the spectral information stored within their databases, the SDSS also offers helpful image visualization functionality for the objects that are captured. Below is one such example of the visualization with a galaxy.
+- An abundance of data and features are collected each time the telescope captures images. In addition to capturing light in the visible spectrum, the telescope records the galactic coordinates of the body, five distinct wavelength bands emitted from the body, the redshift of the object, and many different metadata regarding how and when the images and data were captured. All of the data is freely obtainable in a variety of ways via the SDSS website, for my use I will use a SQL query to obtain all of my data from their databases. Along with the spectral information stored within their databases, the SDSS also offers helpful [image visualization functionality](http://skyserver.sdss.org/dr16/en/tools/chart/image.aspx) for the objects that are captured. Below is one such example of the visualization with a galaxy.
 
 ![Galaxy Visualized Example](/pictures/galaxy-data-example.PNG)
 
 ### 2. SQL Querying [SDSS SkyServer DR16](http://skyserver.sdss.org/dr16/en/home.aspx).
 - Navigate to the [SQL Search](http://skyserver.sdss.org/dr16/en/tools/search/sql.aspx) page.
-- The maximum numbers of entries that can be extracted into CSV format using this tool is 500,000, so will do that.
+- The maximum numbers of entries that can be extracted into CSV format using this tool is 500,000, so we will do that.
 ```sql
 SELECT TOP 500000
    p.objid, p.ra, p.dec, p.u, p.g, p.r, p.i, p.z, 
@@ -712,10 +712,18 @@ FROM PhotoObj AS p
    JOIN SpecObj AS s ON s.bestobjid = p.objid
 ```
 - For a more detailed background on the data, refer to the above links, and also [here](http://skyserver.sdss.org/dr16/en/tools/getimg/getimghome.aspx).
+
 ## Part 9: Installing Python Packages and Jupyter Notebook on Master node.
-
-
+- The following commands worked to setup Jupyter and PySpark together on my `pi1`:
+```console
+pi@pi1:~$ sudo pip3 install jupyter
+pi@pi1:~$ pip3 install --upgrade ipython tornado jupyter-client jupyter-core
+pi@pi1:~$ python3 -m ipykernel install --user
+pi@pi1:~$ pip3 install pyspark findspark
+pi@pi1:~$ jupyter-notebook
+```
+***INSERT SCREENSHOT OF JUPYTER HOME***
 
 ## Part 10: Stars, Galaxies, and Quasars: Using PySpark to Classify SDSS Data.
-
+### Jupyter Notebook Walkthrough
 
