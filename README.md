@@ -722,8 +722,8 @@ pi@pi1:~$ python3 -m ipykernel install --user
 pi@pi1:~$ pip3 install pyspark findspark
 pi@pi1:~$ jupyter-notebook
 ```
-***INSERT SCREENSHOT OF JUPYTER HOME***
+![Jupyter Home](/pictures/jupyter-home.PNG)
 
 ## Part 10: Stars, Galaxies, and Quasars: Using PySpark to Classify SDSS Data.
-### Jupyter Notebook Walkthrough
+### [Jupyter Notebook Walkthrough](/notebooks/picluster.ipynb)
 
