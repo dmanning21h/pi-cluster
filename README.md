@@ -722,8 +722,22 @@ pi@pi1:~$ python3 -m ipykernel install --user
 pi@pi1:~$ pip3 install pyspark findspark
 pi@pi1:~$ jupyter-notebook
 ```
-![Jupyter Home](/pictures/jupyter-home.PNG)
+![Jupyter Home](/pictures/jupyter-home.png)
 
 ## Part 10: Stars, Galaxies, and Quasars: Using PySpark to Classify SDSS Data.
-### [Jupyter Notebook Walkthrough](/notebooks/picluster.ipynb)
+### 1. [Jupyter Notebook Walkthrough](/notebooks/picluster.ipynb)
+
+### 2. After starting PySpark Job, the in-progress job can be viewed at the Spark History Server UI (http://pi1:18080).
+![Spark Job In-Progress](/pictures/spark-job-inprogress.png)
+
+### 3. Via the "Executors" Tab, statistics regarding the job pertaining to the master and workers can be monitored.
+![Spark Job Beginning](/pictures/spark-job-beginning.png)
+
+### 4. Under the Main "Jobs" tab, the timeline of events and tasks completed over the course of the job are recorded.
+![Spark Job Timeline](/pictures/spark-job-timeline.png)
+
+### 5. Upon finishing, the job statistics relating to the executors can again be reference via the "Executors" tab.
+![Spark Job Done](/pictures/spark-job-done.png)
+
+### 6. [Keras Comparison Notebook for Reference](/notebooks/keras-comparison.ipynb)
 
