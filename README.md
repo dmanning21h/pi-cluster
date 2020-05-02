@@ -572,9 +572,9 @@ pi@pi1:~$ hdfs dfs -mkdir books
 ### 3. Download books files.
 ```console
 pi@pi1:~$ cd /opt/hadoop
-pi@pi1:/opt/hadoop$ wget -O alice.txt https://www.gutenberg/org/files/11/11-0.txt
-pi@pi1:/opt/hadoop$ wget -O holmes.txt https://www.gutenberg/org/files/1661/1661-0.txt
-pi@pi1:/opt/hadoop$ wget -O frankenstein.txt https://www.gutenberg/org/files/84/84-0.txt
+pi@pi1:/opt/hadoop$ wget -O alice.txt https://www.gutenberg.org/files/11/11-0.txt
+pi@pi1:/opt/hadoop$ wget -O holmes.txt https://www.gutenberg.org/files/1661/1661-0.txt
+pi@pi1:/opt/hadoop$ wget -O frankenstein.txt https://www.gutenberg.org/files/84/84-0.txt
 ```
 
 ### 4. Upload book files to the HDFS.
@@ -659,9 +659,9 @@ pi@pi1:/opt/spark/conf$ mousepad spark-defaults.conf
 ```
 spark.master                       yarn
 spark.executor.instances           4
-spark.driver.memory                512m
-spark.yarn.am.memory               512m
-spark.executor.memory              512m
+spark.driver.memory                1024m
+spark.yarn.am.memory               1024m
+spark.executor.memory              1024m
 spark.executor.cores               4
 
 spark.eventLog.enabled             true
