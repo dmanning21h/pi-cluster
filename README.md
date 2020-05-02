@@ -558,7 +558,7 @@ function clustershutdown {
 ## Part 5: Testing the Hadoop Cluster (Wordcount Example)
 ### 1. Start cluster, if not active already.
 ```console
-pi@pi1:~$ start-hdfs.sh && start-yarn.sh
+pi@pi1:~$ start-dfs.sh && start-yarn.sh
 ```
 
 ### 2. Make data directories.
